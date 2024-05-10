@@ -1,0 +1,99 @@
+// Function to filter events happening in the next 7 days
+function getEventsNext7Days(events) {
+    const today = new Date();
+    const next7Days = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000); // Get date for 7 days from now
+
+    return events.filter(event => event.date >= today && event.date <= next7Days);
+}
+
+// Function to display filtered events
+function displayEvents(events) {
+    events.map(event => {
+        console.log(`Title: ${event.title}`);
+        console.log(`Date: ${event.date.toDateString()}`);
+        console.log(`Location: ${event.location}`);
+        console.log(`Attendees: ${[...event.attendees].join(', ')}`);
+        console.log("--------------------");
+    });
+}
+
+// Filter events happening in the next seven days and display them
+const eventsNext7Days = getEventsNext7Days(events);
+console.log("Events happening in the next 7 days:");
+displayEvents(eventsNext7Days);
+
+// Create a WeakMap to store organizer names
+let organizerMap = new WeakMap();
+
+// Function to associate organizers with events using WeakMap
+function associateOrganizers(events) {
+    events.forEach(event => {
+        organizerMap.set(event, event.organizer);
+    });
+}
+
+// Function to filter events happening in the next seven days
+function filterEvents(events) {
+    const today = new Date();
+    const nextWeek = new Date(today);
+    nextWeek.setDate(nextWeek.getDate() + 7);
+    
+    return events.filter(event => event.date >= today && event.date <= nextWeek);
+}
+
+// Function to display filtered events with organizers
+function displayEvents(filteredEvents) {
+    filteredEvents.map(event => {
+        console.log(`Title: ${event.title}`);
+        console.log(`Date: ${event.date.toDateString()}`);
+        console.log(`Location: ${event.location}`);
+        console.log(`Attendees: ${event.attendees.join(", ")}`);
+        console.log(`Organizer: ${organizerMap.get(event)}`);
+        console.log("-----------------------------");
+    });
+}
+
+// Associate organizers with events
+associateOrganizers(events);
+
+// Filter events happening in the next seven days and display them with organizers
+const filteredEvents = filterEvents(events);
+console.log("Events happening in the next seven days:");
+displayEvents(filteredEvents);
+
+
+ // Function to add a new attendee to an event
+function addAttendeeToEvent(eventTitle, attendeeName) {
+    // Find the event with the given title
+    const event = events.find(event => event.title === eventTitle);
+
+    // If the event is found, add the attendee
+    if (event) {
+        event.attendees.add(attendeeName);
+        console.log(`${attendeeName} has been added to the attendees of ${eventTitle}.`);
+    } else {
+        console.log(`Event with title '${eventTitle}' not found.`);
+    }
+}
+
+// Test the function
+addAttendeeToEvent("Church", "Kalondu");
+console.log(events.find(event => event.title === "Church").attendees);
+
+// Function to add a custom "formattedDate" property to each event object
+function addFormattedDate(event) {
+    event.formattedDate = `${(event.date.getMonth() + 1).toString().padStart(2, '0')}/${event.date.getDate().toString().padStart(2, '0')}/${event.date.getFullYear()}`;
+    return event;
+}
+
+// Function to convert events array to JSON string
+function convertEventsToJSON(events) {
+    // Add formattedDate property to each event object
+    const eventsWithFormattedDate = events.map(addFormattedDate);
+    // Convert to JSON string
+    return JSON.stringify(eventsWithFormattedDate);
+}
+
+// Test the function
+const eventsJSON = convertEventsToJSON(events);
+console.log(eventsJSON);
